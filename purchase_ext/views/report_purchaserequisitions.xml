@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_new_purchaserequisitions">
+   <t t-foreach="docs" t-as="o">
+    <t t-call="purchase_ext.new_external_layout">
+        <div class="page">
+            <div class="oe_structure"/>
+            <div class="row">
+                <div class="text-center" style="margin-bottom:20px;">
+                   <h2>Quote Comparison Analysis N°<span t-field="o.name"/></h2>
+                </div>
+                <t t-if="o.purchase_ids">
+                    <table class="table table-condensed" style="border:1px solid black;font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th style="border: 1px solid black;text-align:center;" colspan="3">
+                                     <h3>Suppliers</h3>
+                                </th>
+                                <th class="text-center" style="border: 1px solid black;" t-foreach="o.purchase_ids" t-as="purchase_ids" colspan="2">
+                                    <strong><center><span t-field="purchase_ids.partner_id.name"/><br/>
+                                        <span t-field="purchase_ids.partner_id.phone"/>
+                                    </center></strong>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th style="border: 1px solid black"><center>N0.</center></th>
+                                <th style="border: 1px solid black" ><center>Descriptions</center></th>
+                                <th style="border: 1px solid black"><center>Qty</center></th>
+                                <t t-foreach="o.purchase_ids" t-as="purchase_ids">
+                                    <th style="border: 1px solid black"><center>Unit Price</center></th>
+                                    <th style="border: 1px solid black"><center>Amount</center></th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.line_ids" t-as="line_ids">
+                                <td style="border:1px solid black;" class="text-center">
+                                   <span t-esc="line_ids_index + 1"/>
+                                </td>
+                                <td style="border:1px solid black;" class="text-left">
+                                    [ <span t-field="line_ids.product_id.code"/> ]
+                                    <span t-field="line_ids.product_id.name"/>
+                                </td>
+                                <td style="border:1px solid black;">
+                                    <span t-esc="'{0:,.0f}'.format(line_ids.product_qty)"/>
+                                    <span t-field="line_ids.product_uom_id.name"/>
+                                </td>
+                                <t t-foreach="o.purchase_ids" t-as="purchase_ids">
+                                    <td style="border: 1px solid black"  class="text-center">
+                                        $ <span t-field="purchase_ids.order_line[line_ids_index].price_unit" />
+                                    </td>
+                                    <td style="border: 1px solid black"  class="text-center">
+                                        $ <span t-field="purchase_ids.order_line[line_ids_index].price_subtotal" />
+                                    </td>
+                                </t>
+                            </tr>
+                            <tr>
+                                <td  colspan="3"></td>
+                                <t t-foreach="o.purchase_ids" t-as="purchase_ids">
+                                    <th style="text-align:right;border:1px solid black;">Total: </th>
+                                    <th style="text-align:center;border:1px solid black;">
+                                        $ <t t-esc="purchase_ids.amount_total"/>
+                                    </th>
+                                </t>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <div class="row">
+                    <div class="col-xs-3 pull-left text-center">
+                        <div style="margin-top:10px;">
+                            <strong>Prepared By</strong>
+                        </div>
+                        <div style="margin-top:10px;">
+                            <strong>Procurement Officer</strong>
+                        </div>
+                        <div style="margin-top:90px;">
+                            <strong>Date: ............/............/............</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-3 text-center">
+                        <div style="margin-top:10px;">
+                            <strong>Checked By</strong>
+                        </div>
+                        <div style="margin-top:10px;">
+                            <strong>Procurement Supervisor</strong>
+                        </div>
+                        <div style="margin-top:90px;">
+                            <strong>Date: ............/............/............</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-3 text-center">
+                        <div style="margin-top:10px;">
+                            <strong>Checked By</strong>
+                        </div>
+                        <div style="margin-top:10px;">
+                            <strong>Procurement Manager</strong>
+                        </div>
+                        <div style="margin-top:90px;">
+                            <strong>Date: ............/............/............</strong>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-3 pull-right text-center">
+                        <div style="margin-top:10px;">
+                            <strong>Checked By</strong>
+                        </div>
+                        <div style="margin-top:10px;">
+                            <strong>Technical Director</strong>
+                        </div>
+                        <div style="margin-top:90px;">
+                            <strong>Date: ............/............/............</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    </t>
+</template>
+
+<report
+    string="Compare Quotes"
+    id="purchase_requisition.action_purchase_requisition"
+    model="purchase.requisition"
+    report_type="qweb-pdf"
+    name="purchase_ext.report_new_purchaserequisitions"
+    file="purchase_ext.report_new_purchaserequisitions"
+/>
+</data>
+</openerp>
+

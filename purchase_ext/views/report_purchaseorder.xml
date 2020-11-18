@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_purchaseorder_new_document">
+   <t t-call="purchase_ext.new_external_layout">
+        <div class="page">
+            <div class="oe_structure"/>
+            <div class="row">
+               <div>
+                  <h2 t-if="o.state != 'draft'">Purchase Order Confirmation N°<span t-field="o.name"/></h2>
+                  <h2 t-if="o.state == 'draft'">Request for Quotation N°<span t-field="o.name"/></h2>
+               </div>
+               <table class="table table-border" style="border:1px solid black;font-size: 12px;">
+                  <tr style="border:1px solid black;">
+                      <td style="width: 15%;border:1px solid black; ">
+                          <strong>Supplier Name:</strong>
+                      </td>
+                      <td style="width: 35%;border:1px solid black;font-size:12px">
+                          <div t-field="o.partner_id"
+                        t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax","email", "website"], "no_marker": true}'/>
+                        <p t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></p>
+                      </td>
+                      <td style="border:1px solid black;" colspan="5">
+                         <strong>Note:</strong><span t-field="o.notes" style="font-size:12px;padding-left:10px"/>
+                      </td>
+                  </tr>
+                    <tr>
+                        <th style="border:1px solid black;font-size:12px">
+                           <strong>Purchase Request N°</strong>
+                        </th>
+                        <th style="border:1px solid black;font-size:12px">
+                           <strong>Order Date:</strong>
+                        </th>
+                        <th style="border:1px solid black;font-size:12px">
+                           <strong>Date Approved:</strong>
+                        </th>
+                        <th style="border:1px solid black;font-size:12px">
+                           <strong>Requester</strong>
+                        </th>
+                        <th style="border:1px solid black;font-size:12px">
+                           <strong>Find Quotation by:</strong>
+                        </th>
+                     </tr>
+                     <tr>
+                        <td style="border:1px solid black;font-size:12px">
+                           <p t-field="o.purchase_request_ref"/>
+                        </td>
+                        <td style="border:1px solid black;font-size:12px">
+                           <p t-field="o.date_order"/>
+                        </td>
+                         <td style="border:1px solid black;font-size:12px">
+                           <p t-field="o.date_approve"/>
+                        </td>
+                        <td style="border:1px solid black;font-size:12px">
+                           <p t-field="o.requester_id"/>
+                        </td>
+
+
+                        <td style="border:1px solid black;font-size:12px">
+                           <p t-field="o.quotation_by"/>
+                        </td>
+                     </tr>
+               </table>
+
+               <table class="table table-condensed" style="border:1px solid black;font-size: 12px;">
+                  <thead>
+                     <tr style="font-size:12px">
+                        <th style="border:1px solid black;"  class="text-center" >No</th>
+                        <t t-if="o.print_image and o.image_sizes in ('image', 'image_medium', 'image_small') ">
+                           <th style="border:1px solid black;" class="text-center">Product Image</th>
+                        </t>
+                        <th style="border:1px solid black;"  class="text-center" >Product Name</th>
+                        <th style="border:1px solid black;" class="text-center" >Project Name</th>
+                        <th style="border:1px solid black;" class="text-center" >Qty</th>
+                        <th style="border:1px solid black;" class="text-center" >Unit Price</th>
+                        <th style="border:1px solid black;" class="text-center" >Taxes</th>
+                        <th style="border:1px solid black;" class="text-center" >Sub Total</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr t-foreach="o.order_line" t-as="line" style="page-break-inside: avoid;">
+                        <td class="text-center" style="border:1px solid black; font-size:12px">
+                           <span t-esc="line_index + 1"/>
+                        </td>
+                        <t t-if="o.image_sizes == 'image' and o.print_image ">
+                            <td style="border:1px solid black;">
+                                <span t-field="line.product_id.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}"/>
+                            </td>
+                        </t>
+                        <t t-if="o.image_sizes == 'image_medium' and o.print_image ">
+                            <td style="border:1px solid black;">
+                                <span t-field="line.product_id.image_medium" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}"/>
+                            </td>
+                        </t>
+                        <t t-if="o.image_sizes == 'image_small' and o.print_image ">
+                            <td style="border:1px solid black;">
+                                <span t-field="line.product_id.image_small" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img-rounded&quot;}"/>
+                            </td>
+                        </t>
+                        <td style="border:1px solid black; font-size:12px">
+                           <span t-field="line.name"/>
+                        </td>
+                        <td class="text-center" style="border:1px solid black; font-size:12px">
+                           <span t-field="o.project_name"/>
+                        </td>
+                        <td class="text-center" style="border:1px solid black; font-size:12px">
+                           <span t-esc="'{0:,.2f}'.format(line.product_qty)"/>
+                           <span t-field="line.product_uom.name"/>
+                        </td>
+
+                        <td class="text-center" style="border:1px solid black; font-size:12px">
+                           <span t-field="line.price_unit" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+                        </td>
+                        <td class="text-center" style="border:1px solid black; font-size:12px">
+                           <span t-esc="', '.join(map(lambda x: x.name, line.taxes_id))"/>
+                        </td>
+                        <td class="text-center" style="border:1px solid black; font-size:12px">
+                           <span t-field="line.price_subtotal" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+                        </td>
+                     </tr>
+                     <t t-if="o.print_image">
+                     <tr style="page-break-inside:avoid;border:1px solid black;">
+                        <td colspan="7" style="font-size:12px;text-align:right;border:1px solid black;">Untaxed Amount:</td>
+                        <td style="font-size:12px;text-align:center;border:1px solid black;">
+                           $
+                           <t t-esc="o.amount_untaxed"/>
+                        </td>
+                     </tr>
+                     <tr style="page-break-inside:avoid">
+                        <td colspan="7" style="font-size:12px;text-align:right;border:1px solid black;">Taxes:</td>
+                        <td style="font-size:12px;text-align:center;border:1px solid black;">
+                           $
+                           <t t-esc="o.amount_tax"/>
+                        </td>
+                     </tr>
+                     <tr style="page-break-inside:avoid">
+                        <td colspan="7" style="font-size:12px;text-align:right;border:1px solid black;">Amount Total:</td>
+                        <td style="font-size:12px;text-align:center;border:1px solid black;">
+                           $
+                           <t t-esc="o.amount_total"/>
+                        </td>
+                     </tr>
+                     </t>
+                     <t t-if="o.print_image != True">
+                     <tr>
+                        <td rowspan="4" colspan="5"  style="font-size:12px;text-align:left;border:1px solid black;"><strong>Comment:</strong>
+                           <!--p t-field="o.notes"/-->
+                        </td>
+                     </tr>
+                     <tr style="page-break-inside:avoid;border:1px solid black;">
+                        <td style="font-size:12px;text-align:right;border:1px solid black;"><strong>Untaxed Amount:</strong></td>
+                        <td style="font-size:12px;text-align:center;border:1px solid black;" >
+                           $
+                           <t t-esc="o.amount_untaxed"/>
+                        </td>
+                     </tr>
+                     <tr style="page-break-inside:avoid">
+                        <td style="font-size:12px;text-align:right;border:1px solid black;"><strong>Taxes 10%:</strong></td>
+                        <td style="font-size:12px;text-align:center;border:1px solid black;">
+                           $
+                           <t t-esc="o.amount_tax"/>
+                        </td>
+                     </tr>
+                     <tr style="page-break-inside:avoid">
+                        <td style="font-size:12px;text-align:right;border:1px solid black;"><strong>Amount Total:</strong></td>
+                        <td style="font-size:12px;text-align:center;border:1px solid black;" >
+                           $
+                           <t t-esc="o.amount_total" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+                        </td>
+                     </tr>
+                     </t>
+                  </tbody>
+               </table>
+
+               <div class="row">
+                  <div class="col-xs-3 pull-right">
+                     <div style="margin-top:10px;">
+                        <strong>Authorized Signature</strong>
+                     </div>
+                     <div style="margin-top:90px;">
+                        <strong>Date: ............/............/............</strong>
+                     </div>
+                  </div>
+               </div>
+               <div class="oe_structure"/>
+            </div>
+         </div>
+   </t>
+</template>
+
+<template id="report_purchaseorder">
+    <t t-call="report.html_container">
+        <t t-foreach="doc_ids" t-as="doc_id">
+            <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'purchase_ext.report_purchaseorder_new_document')"/>
+        </t>
+    </t>
+</template>
+
+<template id="new_external_layout">
+    <!-- Multicompany -->
+    <t t-if="o and 'company_id' in o">
+        <t t-set="company" t-value="o.company_id"></t>
+    </t>
+    <t t-if="not o or not 'company_id' in o">
+        <t t-set="company" t-value="res_company"></t>
+    </t>
+
+    <t t-call="purchase_ext.new_external_layout_header" />
+    <t t-raw="0" />
+    <t t-call="report.external_layout_footer" />
+</template>
+
+<template id="new_external_layout_header">
+    <div class="header">
+        <div class="row">
+            <div class="col-xs-2">
+               <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 80px;"/>
+            </div>
+            <div class="col-xs-10">
+               <div style="font-size:20px;margin-top:10px;text-align:center;margin-right:90px">អេ ហ្សេត អាយ អ៊ី &amp; ស៊ី ឯ.ក</div>
+               <div style="font-size:16px;margin-top:5px;text-align:center;margin-right:90px">AZI E&amp;C COMPANY LIMITED</div>
+               <div style="font-size:16px;text-align:center;margin-right:90px">Address: N0.58 St 306, Sangkat Beoung Keng Kang I, Chomka Morn Phnom Penh,Cambodia</div>
+            </div>
+         </div>
+        <div class="row zero_min_height">
+            <div class="col-xs-12">
+                <div style="border-bottom: 1px solid black;"/>
+            </div>
+        </div>
+</div>
+
+</template>
+
+<report
+    string="Purchase Order"
+    id="purchase.action_report_purchase_order"
+    model="purchase.order"
+    report_type="qweb-pdf"
+    name="purchase_ext.report_purchaseorder"
+    file="purchase_ext.report_purchaseorder"
+/>
+</data>
+</openerp>
+

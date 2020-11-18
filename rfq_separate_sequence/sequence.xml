@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+		<record id="seq_purchase_order_quot_type"
+			model="ir.sequence.type">
+			<field name="name">RFQ Purchase</field>
+			<field name="code">purchase.order.quot</field>
+		</record>
+
+		<record id="seq_purchase_order_quot" model="ir.sequence">
+			<field name="name">RFQ Purchase</field>
+			<field name="code">purchase.order.quot</field>
+			<field name="prefix">RFQ</field>
+			<field name="padding">5</field>
+			<field name="company_id" eval="False" />
+		</record>
+	</data>
+	<data>
+		<record id="purchase_order_form_view_inherit"
+			model="ir.ui.view">
+			<field name="name">purchase_order_form_view_inherit_rfq_sep_seq
+			</field>
+			<field name="model">purchase.order</field>
+			<field name="inherit_id" ref="purchase.purchase_order_form" />
+			<field name="arch" type="xml">
+				<label string="Request for Quotation " position="replace" />
+				<label string="Purchase Order " position="replace" />
+			</field>
+		</record>
+	</data>
+</openerp>

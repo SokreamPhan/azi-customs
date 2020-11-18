@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_new_picking">
+   <t t-foreach="docs" t-as="o">
+    <t t-call="purchase_ext.new_external_layout">
+        <div class="page">
+            <div class="oe_structure"/>
+            <div class="row">
+                <div class="text-center">
+                    <strong style="font-size:20px">GOODS RECEIVE NOTE</strong>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 pull-right">
+                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;"/>
+                    </div>
+                </div>
+                <h3>
+                    <span t-field="o.picking_type_id"/>:
+                    <span t-field="o.name"/>
+                </h3>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th><strong>Order (Origin)</strong></th>
+                            <th><strong>Project</strong></th>
+                            <th><strong>Creation Date</strong></th>
+                            <th><strong>Date of Transfer</strong></th>
+                            <th><strong>Date To Arrive</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-top:1px solid black;">
+                            <td>
+                                <span t-field="o.origin"/>
+                            </td>
+
+                                <td>
+                                <span t-field="o.project_name"/>
+                            </td>
+
+                            <td>
+                                <span t-field="o.date"/>
+                            </td>
+                            <td>
+                                <span t-field="o.date_done"/>
+                            </td>
+                            <td name="td_sched_date">
+                                <span t-field="o.min_date"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table table-striped" style="border:1px solid black;">
+                    <thead>
+                    <tr style="font-size:12px">
+                    <th style="border:1px solid black;"><strong>No</strong></th>
+                        <th style="border:1px solid black;"><strong>Product</strong></th>
+                        <th style="border:1px solid black;"><strong>Quantity</strong></th>
+                    <th style="border:1px solid black;"><strong>Source</strong></th>
+                        <th style="border:1px solid black;"><strong>Destination</strong></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr t-foreach="o.move_lines" t-as="move" style="page-break-inside:avoid; font-size:12px">
+                        <t t-if="(o.state != 'partially_available') or (move.reserved_availability &gt; 0)">
+                        <td style="border:1px solid black;">
+                        <span t-esc="move_index+1"/>
+                        </td>
+                            <td style="border:1px solid black;"><span t-field="move.product_id"/></td>
+                            <td style="border:1px solid black;">
+                                <t t-if="o.state == 'partially_available'">
+                                    <span t-field="move.reserved_availability"/> <span t-field="move.product_id.uom_id" groups="product.group_uom"/>
+                                </t>
+                                <t t-if="o.state != 'partially_available'">
+                                    <span t-field="move.product_uom_qty"/> <span t-field="move.product_uom" groups="product.group_uom"/>
+                                </t>
+                            </td>
+                            <td style="border:1px solid black;"><span t-field="move.location_id.name"/></td>
+
+                            <td style="border:1px solid black;"><span t-field="move.location_dest_id.name"/></td>
+                        </t>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div style="border-top: 1px solid black;">
+                    <table class="table">
+
+                        <tr style="font-size:12px">
+                            <th>
+                            <p>អ្នកផ្ញើរ/Sender:</p>
+                            </th>
+                            <th>
+                            <p>អ្នកទទួល/Receiver:</p>
+                            </th>
+                            <th>
+                            <p>អ្នកពិនិត្យ/Check by:</p>
+                            </th>
+                            <th>
+                            <p>អ្នកបើកបរ/ Driver:</p>
+                            </th>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+    </t>
+</template>
+
+<report
+    string="GOODS RECEIVE NOTE"
+    id="action_report_picking"
+    model="stock.picking"
+    report_type="qweb-pdf"
+    name="purchase_ext.report_new_picking"
+    file="purchase_ext.report_new_picking"
+/>
+</data>
+</openerp>
+

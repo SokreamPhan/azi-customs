@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record id="purchase_order_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_ref']" position="after">
+                   <field name="requester_id"/>
+                   <field name="purchase_request_ref"/>
+                   <field name="project_name"/>
+                   <field name="quotation_by"/>
+                </xpath>
+                <xpath expr="//field[@name='location_id']" position="replace">
+
+                </xpath>
+                <xpath expr="//field[@name='picking_type_id']" position="after">
+                    <field name="location_id" groups="stock.group_locations" on_change="onchange_location_id(location_id, context)"/>
+                </xpath>
+
+
+            </field>
+        </record>
+
+    </data>
+</openerp>
